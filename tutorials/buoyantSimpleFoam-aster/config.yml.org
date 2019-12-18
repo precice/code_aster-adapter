@@ -1,0 +1,33 @@
+base-path: "/home/michel/Desktop/Code_Aster-Adapter-Dummy/buoyantSimpleFoam-aster"
+
+simulation:
+
+    time-step: 1
+    max-time: 4
+    steady-state: True
+    force-explicit: False
+    force-parallel: False
+    max-coupling-iterations: 30
+    output-frequency: 10
+
+
+participants:
+
+    Fluid:
+        solver: OpenFOAM
+        interfaces:
+            - {name: Fluid-Interface, patches: [interface]}
+        domain-decomposed: False
+        directory: fluid
+
+    Solid:
+        solver: Code_Aster
+        interfaces:
+            - {name: Solid-Interface, patch: interface, material-id: 0}
+        domain-decomposed: False
+        non-linear: False
+        directory: solid
+
+
+couplings:
+    - [Solid-Interface, Fluid-Interface]

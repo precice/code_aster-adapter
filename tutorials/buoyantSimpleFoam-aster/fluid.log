@@ -1,0 +1,166 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5.x                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 5.x-68e8507efb72
+Exec   : buoyantSimpleFoam -case fluid
+Date   : Dec 18 2019
+Time   : 14:53:35
+Host   : "michel-HP-ZBook-Studio-G4"
+PID    : 11112
+I/O    : uncollated
+Case   : ./fluid
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+
+SIMPLE: convergence criteria
+    field U	 tolerance 1e-06
+    field p_rgh	 tolerance 0.0005
+    field h	 tolerance 1e-06
+
+Reading thermophysical properties
+
+Selecting thermodynamics package 
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState perfectGas;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+Reading field U
+
+Reading/calculating face flux field phi
+
+Creating turbulence model
+
+Selecting turbulence model type laminar
+Selecting laminar stress model Stokes
+
+Reading g
+
+Reading hRef
+Calculating field g.h
+
+Reading field p_rgh
+
+No MRF models present
+
+Radiation model not active: radiationProperties not found
+Selecting radiationModel none
+No finite volume options present
+
+
+Starting time loop
+
+---[preciceAdapter] The preciceAdapter was loaded.
+Registered objects: 
+32
+(
+points
+neighbour
+thermo:mu
+MRFProperties
+thermo:psi
+ghf
+h
+faces
+U
+rho
+radiationProperties
+turbulenceProperties
+fvSchemes
+fvOptions
+faceZones
+fvSolution
+p_rgh
+thermophysicalProperties
+phi
+owner
+gh
+data
+cellZones
+boundary
+g
+p
+T
+hRef
+thermo:rho
+pointZones
+p_rghPrevIter
+thermo:alpha
+)
+
+---[preciceAdapter] Reading the adapter's YAML configuration file ./fluid/precice-adapter-config.yml...
+---[preciceAdapter] [DEBUG] Checking the adapter's YAML configuration file...
+---[preciceAdapter] [DEBUG]   participant : Fluid
+---[preciceAdapter] [DEBUG]   precice-config-file : precice-config.xml
+---[preciceAdapter] [DEBUG]   interfaces : 
+---[preciceAdapter] [DEBUG]   - mesh      : Fluid-Interface
+---[preciceAdapter] [DEBUG]     locations : faceCenters
+---[preciceAdapter] [DEBUG]     patches   : 
+---[preciceAdapter] [DEBUG]       interface
+---[preciceAdapter] [DEBUG]     write-data : 
+---[preciceAdapter] [DEBUG]       Sink-Temperature-Fluid
+---[preciceAdapter] [DEBUG]       Heat-Transfer-Coefficient-Fluid
+---[preciceAdapter] [DEBUG]     read-data : 
+---[preciceAdapter] [DEBUG]       Sink-Temperature-Solid
+---[preciceAdapter] [DEBUG]       Heat-Transfer-Coefficient-Solid
+---[preciceAdapter] [DEBUG]     subcycling : 1
+---[preciceAdapter] [DEBUG]     prevent early exit : 1
+---[preciceAdapter] [DEBUG]     evaluate boundaries : 1
+---[preciceAdapter] [DEBUG]     disable checkpointing : 0
+---[preciceAdapter] [DEBUG]     CHT module enabled : 1
+---[preciceAdapter] [DEBUG]     FSI module enabled : 0
+---[preciceAdapter] [DEBUG] Configuring the CHT module...
+---[preciceAdapter] [DEBUG]     user-defined solver type : none
+---[preciceAdapter] [DEBUG]     temperature field name : T
+---[preciceAdapter] [DEBUG]     transportProperties name : transportProperties
+---[preciceAdapter] [DEBUG]     conductivity name for basic solvers : k
+---[preciceAdapter] [DEBUG]     density name for incompressible solvers : rho
+---[preciceAdapter] [DEBUG]     heat capacity name for incompressible solvers : Cp
+---[preciceAdapter] [DEBUG]     Prandtl number name for incompressible solvers : Pr
+---[preciceAdapter] [DEBUG]     Turbulent thermal diffusivity field name for incompressible solvers : alphat
+---[preciceAdapter] [DEBUG] Determining the solver type...
+---[preciceAdapter] [DEBUG] Did not find the transportProperties dictionary.
+---[preciceAdapter] [DEBUG] Found the turbulenceProperties dictionary.
+---[preciceAdapter] [DEBUG] Found the thermophysicalProperties dictionary.
+---[preciceAdapter] [DEBUG] This is a compressible flow solver, as turbulence and thermophysical properties are provided.
+---[preciceAdapter] [DEBUG] Checking the timestep type (fixed vs adjustable)...
+---[preciceAdapter] [DEBUG]   Timestep type: fixed.
+---[preciceAdapter] [DEBUG] Creating the preCICE solver interface...
+---[preciceAdapter] [DEBUG]   Number of processes: 1
+---[preciceAdapter] [DEBUG]   MPI rank: 0
+---[preciceAdapter] [DEBUG]   preCICE solver interface was created.
+---[preciceAdapter] [DEBUG] Configuring preCICE...
+(0) 14:53:36 [impl::SolverInterfaceImpl]:91 in configure: [0mThis is preCICE version 1.4.0
+(0) 14:53:36 [impl::SolverInterfaceImpl]:92 in configure: [0mConfiguring preCICE with configuration: "precice-config.xml"
+(0) 14:53:36 [impl::SolverInterfaceImpl]:134 in configure: [0mRun in coupling mode
+---[preciceAdapter] [DEBUG]   preCICE was configured.
+---[preciceAdapter] [DEBUG] Creating interfaces...
+---[preciceAdapter] [DEBUG] Number of face centres: 644
+---[preciceAdapter] [DEBUG] Interface created on mesh Fluid-Interface
+---[preciceAdapter] [DEBUG] Adding coupling data writers...
+---[preciceAdapter] [DEBUG] Added writer: Sink Temperature.
+---[preciceAdapter] [DEBUG] Constructed KappaEff_Compressible.
+---[preciceAdapter] [DEBUG] Added writer: Heat Transfer Coefficient for compressible solvers.
+---[preciceAdapter] [DEBUG] Adding coupling data readers...
+---[preciceAdapter] [DEBUG] Added reader: Sink Temperature.
+---[preciceAdapter] [DEBUG] Constructed KappaEff_Compressible.
+---[preciceAdapter] [DEBUG] Added reader: Heat Transfer Coefficient for compressible solvers.
+---[preciceAdapter] [DEBUG] Initalizing the preCICE solver interface...
+(0) 14:53:36 [impl::SolverInterfaceImpl]:198 in initialize: [0mSetting up master communication to coupling partner/s 
