@@ -4,6 +4,6 @@ This adapter was implemented as part of the [master thesis of Lucia Cheung](http
 
 The adapter currently supports preCICE v1.4.1 and Code_Aster v14.4. The following tutorials are available.
 
-* Flow over plate OpenFoam-Code_Aster ([wiki](/wiki/Flow-over-plate-Code_Aster-Tutorial))
+* Flow over plate OpenFoam-Code_Aster ([wiki](wiki/Flow-over-plate-Code_Aster-Tutorial))
 
-A documentation is available in the `cht` subfolder, and in the [wiki](/wiki).
+A documentation is available in the `cht` subfolder, and in the [wiki](wiki).
