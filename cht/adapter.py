@@ -29,6 +29,7 @@ class Adapter:
 		L = [None] * self.numInterfaces 	# Loads
 		SM = [None] * self.numInterfaces	# Shifted meshes
 		for i in range(self.numInterfaces):
+			# Shifted mesh (interface nodes displaced by a distance delta in the direction of the surface normal
 			SM[i] = CREA_MAILLAGE(MAILLAGE=self.MESH, RESTREINT={"GROUP_MA": config[i]["patch"], "GROUP_NO": config[i]["patch"]})
 			# Create interface
 			interface = Interface(self.precice, self.participantName, config[i], self.MESH, SM[i], self.MODEL, self.MAT[config[i]["material-id"]], self.isNonLinear)
@@ -148,7 +149,6 @@ class Interface:
 		self.computeNormals()
 
 		self.nodeCoordinates = np.array([p for p in self.SHMESH.sdj.COORDO.VALE.get()])
-		# Casted len(...)/3 to int
 		self.nodeCoordinates = np.resize(self.nodeCoordinates, (int(len(self.nodeCoordinates)/3), 3))
 		self.shiftMesh()
 
@@ -182,7 +182,6 @@ class Interface:
 			OPERATION='NORMALE'
 		)
 		self.normals = N.EXTR_COMP().valeurs
-		# Casted len(...)/3 to int
 		self.normals = np.resize(np.array(self.normals), (int(len(self.normals)/3), 3))
 		DETRUIRE(CONCEPT=({"NOM": N}, {"NOM": DUMMY}))
 

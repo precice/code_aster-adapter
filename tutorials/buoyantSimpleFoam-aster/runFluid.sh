@@ -1,4 +1,4 @@
 #!/bin/bash
 
     cd fluid; blockMesh; cd ..
-    buoyantSimpleFoam -case fluid #> fluid.log
+    buoyantSimpleFoam -case fluid

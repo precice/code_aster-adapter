@@ -1,10 +1,3 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.4.0                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
@@ -25,7 +18,7 @@ vertices
     (1 .25 0)
     (1 .75 0)
     (0 .75 0)
-    
+
     (0 .25 .4)
     (1 .25 .4)
     (1 .75 .4)
@@ -33,16 +26,16 @@ vertices
 
     (3 .25 0)
     (3 .75 0)
-    
+
     (3 .25 .4)
     (3 .75 .4)
-    
+
     (-.5 .25 0)
     (-.5 .75 0)
-    
+
     (-.5 .75 .4)
     (-.5 .25 .4)
-    
+
 );
 
 blocks
@@ -68,7 +61,7 @@ boundary
 //        	(0 4 7 3)
         );
     }
-    
+
     outlet
     {
         type wall;
@@ -77,7 +70,7 @@ boundary
         	(8 9 11 10)
         );
     }
-    
+
     top
     {
         type wall;
@@ -88,7 +81,7 @@ boundary
         	(13 3 7 14)
         );
     }
-    
+
     slip-bottom
     {
         type wall;
@@ -97,7 +90,7 @@ boundary
         	(15 12 0 4)
         );
     }
-    
+
     bottom
     {
         type wall;
@@ -106,7 +99,7 @@ boundary
         	(1 8 10 5)
         );
     }
-    
+
     interface
     {
         type wall;
@@ -115,7 +108,7 @@ boundary
         	(4 0 1 5)
         );
     }
-    
+
 );
 
 mergePatchPairs
