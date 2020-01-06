@@ -29,8 +29,8 @@ boundaryField
     interface
     {
         type            mixed;
-        refGradient		uniform 0;
-        refValue		uniform 310;
+        refGradient     uniform 0;
+        refValue        uniform 310;
         valueFraction   uniform 0.5;
     }
 
