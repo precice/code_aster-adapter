@@ -15,7 +15,7 @@ settings = \
                             'domain-decomposed': False,
                             'interfaces': [{'material-id': 0,
                                             'name': 'Solid-Interface',
-                                            'patch': 'interfa',
+                                            'patch': 'interface',
                                             'read-data': ['Sink-Temperature-Fluid',
                                                           'Heat-Transfer-Coefficient-Fluid'],
                                             'read-mesh': 'Solid-Interface-Faces',
