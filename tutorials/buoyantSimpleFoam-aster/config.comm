@@ -29,6 +29,6 @@ settings = \
                 'force-parallel': False,
                 'max-coupling-iterations': 30,
                 'max-time': 30,
-                'output-frequency': 31,
+                'output-frequency': 10,
                 'steady-state': True,
                 'time-step': 1}}
