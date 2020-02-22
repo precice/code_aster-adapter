@@ -2,8 +2,9 @@ DEBUT(PAR_LOT='NON');
 
 from subprocess import call
 import sys
-adapter_root = os.getenv('ASTER_ADAPTER_ROOT')
-sys.path.insert(0, adapter_root)
+#>>>>>>>>>>>>>>>>Change the path here>>>>>>>>>>>>>>>>>>>>>>
+sys.path.append("/home/hui/Downloads/code_aster-adapter-tutorial-addition/cht/")
+#<<<<<<<<<<<<<<<<<<Change the path here<<<<<<<<<<<<<<<<<<<
 from adapter import *
 
 # Get participant name from environment variable
@@ -134,11 +135,11 @@ while adapter.isCouplingOngoing():
         # Output if necessary
         k += 1
         if k % settings["simulation"]["output-frequency"] == 0:
-               filename = "output-" + str(k) + ".rmed"
-               DEFI_FICHIER(FICHIER=filename, UNITE=80)
-               IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=TEMP))
-               call(["mv", filename, settings["base-path"] + "/" + participant["directory"]])
-               DEFI_FICHIER(ACTION='LIBERER', UNITE=80)
+               filename = "REPE_OUT/output-" + str(k) + ".rmed"
+               DEFI_FICHIER(FICHIER=filename, UNITE=180+k,TYPE='BINARY')
+               IMPR_RESU(FORMAT='MED', UNITE=180+k, RESU=_F(RESULTAT=TEMP))
+               # call(["mv", filename, settings["base-path"] + "/" + participant["directory"]])
+               DEFI_FICHIER(ACTION='LIBERER', UNITE=180+k)
 
         # Use current solution as initial condition for the next time step
         if time > 0:

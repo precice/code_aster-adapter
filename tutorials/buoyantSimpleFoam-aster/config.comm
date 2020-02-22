@@ -1,5 +1,5 @@
 settings = \
-{'base-path': '/home/michel/Git/code_aster-adapter/tutorials/buoyantSimpleFoam-aster',
+{'base-path': '/home/hui/Downloads/code_aster-adapter-tutorial-addition/tutorials/buoyantSimpleFoam-aster',
  'couplings': [['Solid-Interface', 'Fluid-Interface']],
  'participants': {'Fluid': {'directory': 'fluid',
                             'domain-decomposed': False,
@@ -27,8 +27,8 @@ settings = \
  'precice-config-file': 'precice-config.xml',
  'simulation': {'force-explicit': False,
                 'force-parallel': False,
-                'max-coupling-iterations': 30,
-                'max-time': 30,
-                'output-frequency': 31,
+                'max-coupling-iterations': 100,
+                'max-time': 100,
+                'output-frequency': 1,
                 'steady-state': True,
                 'time-step': 1}}
