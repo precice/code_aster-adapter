@@ -27,8 +27,8 @@ settings = \
  'precice-config-file': 'precice-config.xml',
  'simulation': {'force-explicit': False,
                 'force-parallel': False,
-                'max-coupling-iterations': 30,
-                'max-time': 30,
+                'max-coupling-iterations': 100,
+                'max-time': 100,
                 'output-frequency': 10,
                 'steady-state': True,
-                'time-step': 1}}
+                'time-step': 10}}
