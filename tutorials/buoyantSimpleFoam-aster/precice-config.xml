@@ -31,6 +31,7 @@
       <read-data mesh="Solid-Interface-Faces" name="Sink-Temperature-Fluid"/>
       <read-data mesh="Solid-Interface-Faces" name="Heat-Transfer-Coefficient-Fluid"/>
       <mapping:nearest-neighbor constraint="consistent" direction="read" to="Solid-Interface-Faces" from="Fluid-Interface"/>
+       <export:vtk directory="preCICE-output" />
     </participant>
     <participant name="Fluid">
       <use-mesh name="Fluid-Interface" provide="yes"/>
@@ -40,11 +41,12 @@
       <read-data mesh="Fluid-Interface" name="Sink-Temperature-Solid"/>
       <read-data mesh="Fluid-Interface" name="Heat-Transfer-Coefficient-Solid"/>
       <mapping:nearest-neighbor constraint="consistent" direction="read" to="Fluid-Interface" from="Solid-Interface-Nodes"/>
+      <export:vtk directory="preCICE-output" />
     </participant>
     <m2n:sockets to="Fluid" from="Solid" exchange-directory="/home/michel/Desktop/Code_Aster-Adapter-Dummy/buoyantSimpleFoam-aster" distribution-type="gather-scatter"/>
     <coupling-scheme:serial-explicit>
-      <timestep-length value="1"/>
-      <max-time value="100"/>
+      <time-window-size value="1"/>
+      <max-time-windows value="100"/>
       <participants first="Solid" second="Fluid"/>
       <exchange data="Sink-Temperature-Solid" mesh="Solid-Interface-Nodes" from="Solid" to="Fluid"/>
       <exchange data="Heat-Transfer-Coefficient-Solid" mesh="Solid-Interface-Nodes" from="Solid" to="Fluid"/>
