@@ -1,0 +1,12 @@
+participant: Fluid
+
+precice-config-file: precice-config.xml
+
+interfaces:
+- mesh: Fluid-Interface
+  patches:
+  - interface
+  write-data: [Sink-Temperature-Fluid, Heat-Transfer-Coefficient-Fluid]
+  read-data: [Sink-Temperature-Solid, Heat-Transfer-Coefficient-Solid]
+
+CHTenabled: true
