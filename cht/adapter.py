@@ -21,8 +21,7 @@ class Adapter:
 		self.isNonLinear = isNonLinear
 		self.participantName = participantName
 		self.preciceDt = -1
-		self.precice = precice.Interface(participantName, 0, 1)
-		self.precice.configure(preciceConfigFile)
+		self.precice = precice.Interface(participantName, preciceConfigFile, 0, 1)
 		self.configure(config)
 
 	def configure(self, config):
@@ -74,7 +73,7 @@ class Adapter:
 			self.precice.fulfilled_action(precice.action_read_iteration_checkpoint())
 
 	def isCouplingTimestepComplete(self):
-		return self.precice.is_timestep_complete()
+		return self.precice.is_time_window_complete()
 
 	def advance(self):
 		self.preciceDt = self.precice.advance(self.preciceDt)
@@ -187,13 +186,11 @@ class Interface:
 
 	def setVertices(self):
 		# Nodes
-		self.preciceNodeIndices = [0] * len(self.nodeCoordinates)
 		self.preciceNodesMeshID = self.precice.get_mesh_id(self.nodesMeshName)
-		self.precice.set_mesh_vertices(self.preciceNodesMeshID, len(self.nodeCoordinates), np.hstack(self.nodeCoordinates), self.preciceNodeIndices)
+		self.preciceNodeIndices = self.precice.set_mesh_vertices(self.preciceNodesMeshID,  self.nodeCoordinates)
 		# Face centers
-		self.preciceFaceCenterIndices = [0] * len(self.faceCenterCoordinates)
 		self.preciceFaceCentersMeshID = self.precice.get_mesh_id(self.faceCentersMeshName)
-		self.precice.set_mesh_vertices(self.preciceFaceCentersMeshID, len(self.faceCenterCoordinates), np.hstack(self.faceCenterCoordinates), self.preciceFaceCenterIndices)
+		self.preciceFaceCenterIndices = self.precice.set_mesh_vertices(self.preciceFaceCentersMeshID, self.faceCenterCoordinates)
 
 	def setDataIDs(self, names):
 		for writeDataName in names["write-data"]:
@@ -254,14 +251,14 @@ class Interface:
 					1)
 
 	def readAndUpdateBCs(self):
-		self.precice.read_block_scalar_data(self.readHCoeffDataID, self.readDataSize, self.preciceFaceCenterIndices, self.readHCoeff)
-		self.precice.read_block_scalar_data(self.readTempDataID, self.readDataSize, self.preciceFaceCenterIndices, self.readTemp)
+		self.precice.read_block_scalar_data(self.readHCoeffDataID,  self.preciceFaceCenterIndices)
+		self.precice.read_block_scalar_data(self.readTempDataID,  self.preciceFaceCenterIndices)
 		self.updateBCs(self.readTemp, self.readHCoeff)
 
 	def writeBCs(self, TEMP):
 		writeTemp, writeHCoeff = self.getBoundaryValues(TEMP)
-		self.precice.write_block_scalar_data(self.writeHCoeffDataID, self.writeDataSize, self.preciceNodeIndices, writeHCoeff)
-		self.precice.write_block_scalar_data(self.writeTempDataID, self.writeDataSize, self.preciceNodeIndices, writeTemp)
+		self.precice.write_block_scalar_data(self.writeHCoeffDataID, self.preciceNodeIndices, writeHCoeff)
+		self.precice.write_block_scalar_data(self.writeTempDataID,  self.preciceNodeIndices, writeTemp)
 
 	def getBoundaryValues(self, T):
 

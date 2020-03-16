@@ -43,8 +43,8 @@
     </participant>
     <m2n:sockets to="Fluid" from="Solid" exchange-directory="/home/michel/Desktop/Code_Aster-Adapter-Dummy/buoyantSimpleFoam-aster" distribution-type="gather-scatter"/>
     <coupling-scheme:serial-explicit>
-      <timestep-length value="1"/>
-      <max-time value="100"/>
+      <time-window-size value="1"/>
+      <max-time-windows value="100"/>
       <participants first="Solid" second="Fluid"/>
       <exchange data="Sink-Temperature-Solid" mesh="Solid-Interface-Nodes" from="Solid" to="Fluid"/>
       <exchange data="Heat-Transfer-Coefficient-Solid" mesh="Solid-Interface-Nodes" from="Solid" to="Fluid"/>
