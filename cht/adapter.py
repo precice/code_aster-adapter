@@ -22,7 +22,6 @@ class Adapter:
 		self.participantName = participantName
 		self.preciceDt = -1
 		self.precice = precice.Interface(participantName, preciceConfigFile, 0, 1)
-		# self.precice.configure(preciceConfigFile)
 		self.configure(config)
 
 	def configure(self, config):
