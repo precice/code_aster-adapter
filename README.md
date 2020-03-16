@@ -6,4 +6,4 @@ The adapter currently supports preCICE v1.4.1 and Code_Aster v14.4. The followin
 
 * Flow over plate OpenFoam-Code_Aster ([wiki](https://github.com/precice/code_aster-adapter/wiki/Flow-over-plate-Code_Aster-Tutorial))
 
-A documentation is available in the `cht` subfolder, and in the [wiki](wiki).
+A documentation is available in the `cht` subfolder, and in the [wiki](https://github.com/precice/code_aster-adapter/wiki).
