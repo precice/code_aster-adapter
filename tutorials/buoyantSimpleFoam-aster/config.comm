@@ -1,5 +1,5 @@
 settings = \
-{'base-path': '/home/michel/Git/code_aster-adapter/tutorials/buoyantSimpleFoam-aster',
+{'base-path': 'path/to/code_aster-adapter/tutorials/buoyantSimpleFoam-aster',
  'couplings': [['Solid-Interface', 'Fluid-Interface']],
  'participants': {'Fluid': {'directory': 'fluid',
                             'domain-decomposed': False,
