@@ -10,6 +10,7 @@ from adapter import *
 # Note: In the OpenFOAM and CalculiX adapters, this is read from a command line argument (--precice-participant),
 #       but I don't know how to pass my own argument to as_run
 participantName = os.environ["PRECICE_PARTICIPANT"]
+tutorial_root = os.environ["TUTORIAL_ROOT"]
 
 # ==========================================================================================
 # Include file in UNITE 90: PreCICE setup (config.comm)

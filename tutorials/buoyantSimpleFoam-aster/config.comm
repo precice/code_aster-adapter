@@ -1,7 +1,7 @@
 settings = \
-{'base-path': 'path/to/code_aster-adapter/tutorials/buoyantSimpleFoam-aster',
+{'base-path': tutorial_root+'/tutorials/buoyantSimpleFoam-aster',
  'couplings': [['Solid-Interface', 'Fluid-Interface']],
- 'participants': {'Fluid': {'directory': 'fluid',
+ 'participants': {'Fluid': {'directory': 'Fluid',
                             'domain-decomposed': False,
                             'interfaces': [{'mesh': 'Fluid-Interface',
                                             'name': 'Fluid-Interface',
@@ -11,7 +11,7 @@ settings = \
                                             'write-data': ['Sink-Temperature-Fluid',
                                                            'Heat-Transfer-Coefficient-Fluid']}],
                             'solver': 'OpenFOAM'},
-                  'Solid': {'directory': 'solid',
+                  'Solid': {'directory': 'Solid',
                             'domain-decomposed': False,
                             'interfaces': [{'material-id': 0,
                                             'name': 'Solid-Interface',

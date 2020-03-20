@@ -1,6 +1,6 @@
 participants:
   Solid:
-    directory: solid
+    directory: Solid
     domain-decomposed: false
     interfaces:
     - material-id: 0
