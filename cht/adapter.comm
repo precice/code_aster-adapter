@@ -10,6 +10,7 @@ from adapter import *
 # Note: In the OpenFOAM and CalculiX adapters, this is read from a command line argument (--precice-participant),
 #       but I don't know how to pass my own argument to as_run
 participantName = os.environ["PRECICE_PARTICIPANT"]
+tutorial_root = os.environ["TUTORIAL_ROOT"]
 
 # ==========================================================================================
 # Include file in UNITE 90: PreCICE setup (config.comm)
@@ -33,7 +34,7 @@ isSteadyState = ("steady-state" in settings["simulation"]) and (settings["simula
 # Include case definition.comm.
 # Defines: MESH, MODEL, BC[], MAT[], MATS
 INCLUDE(UNITE=91)
-                         
+
 # ==========================================================================================
 # Create and initialize the adapter
 # ==========================================================================================
@@ -62,13 +63,13 @@ while adapter.isCouplingOngoing():
 
     adapter.writeCheckpoint()
     adapter.readCouplingData()
-    
+
     # ======================================================================================
     # Solve
     # ======================================================================================
-    
+
     if isSteadyState:
-        
+
         if participant["non-linear"]:
             TEMP = THER_NON_LINE(
                 MODELE=MODEL,
@@ -92,12 +93,12 @@ while adapter.isCouplingOngoing():
         )
 
     else:
-    
+
         STEP = DEFI_LIST_REEL(
             DEBUT=time,
             INTERVALLE=(_F(JUSQU_A=time+dt, NOMBRE=1))
         )
-        
+
         if participant["non-linear"]:
             TEMP = THER_NON_LINE(
                 MODELE=MODEL,
@@ -134,11 +135,10 @@ while adapter.isCouplingOngoing():
         # Output if necessary
         k += 1
         if k % settings["simulation"]["output-frequency"] == 0:
-               filename = "output-" + str(k) + ".rmed"
-               DEFI_FICHIER(FICHIER=filename, UNITE=80)
-               IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=TEMP))
-               call(["mv", filename, settings["base-path"] + "/" + participant["directory"]])
-               DEFI_FICHIER(ACTION='LIBERER', UNITE=80)
+               filename = "REPE_OUT/output-" + str(k) + ".rmed"
+               DEFI_FICHIER(FICHIER=filename, UNITE=80+k, TYPE='BINARY')
+               IMPR_RESU(FORMAT='MED', UNITE=80+k, RESU=_F(RESULTAT=TEMP))
+               DEFI_FICHIER(ACTION='LIBERER', UNITE=80+k)
 
         # Use current solution as initial condition for the next time step
         if time > 0:
@@ -153,7 +153,7 @@ while adapter.isCouplingOngoing():
 
     DETRUIRE(CONCEPT=_F(NOM=TEMP))
     DETRUIRE(CONCEPT=_F(NOM=T))
-    
+
     if not isSteadyState:
         DETRUIRE(CONCEPT=_F(NOM=STEP))
 
