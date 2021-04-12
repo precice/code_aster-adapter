@@ -116,13 +116,8 @@ class Interface:
 		self.writeHCoeffDataID = 0
 		self.writeTempDataID = 0
 
-		self.readTemp = []
-		self.readHCoeff = []
 		self.writeTemp = []
 		self.writeHCoeff = []
-
-		self.readDataSize = 0
-		self.writeDataSize = 0
 
 		self.MESH = MESH
 		# Shifted mesh (contains only the interface, and is shifted by delta in the direction opposite to the normal)
@@ -157,12 +152,6 @@ class Interface:
 		self.setVertices()
 
 		self.setDataIDs(names)
-
-		self.readDataSize = len(self.faces)
-		self.writeDataSize = len(self.nodeCoordinates)
-
-		self.readHCoeff = np.zeros(self.readDataSize)
-		self.readTemp = np.zeros(self.readDataSize)
 
 	def computeNormals(self):
 		# Get normals at the nodes
@@ -251,9 +240,9 @@ class Interface:
 					1)
 
 	def readAndUpdateBCs(self):
-		self.precice.read_block_scalar_data(self.readHCoeffDataID,  self.preciceFaceCenterIndices)
-		self.precice.read_block_scalar_data(self.readTempDataID,  self.preciceFaceCenterIndices)
-		self.updateBCs(self.readTemp, self.readHCoeff)
+		readHCoeff = self.precice.read_block_scalar_data(self.readHCoeffDataID,  self.preciceFaceCenterIndices)
+		readTemp = self.precice.read_block_scalar_data(self.readTempDataID,  self.preciceFaceCenterIndices)
+		self.updateBCs(readTemp, readHCoeff)
 
 	def writeBCs(self, TEMP):
 		writeTemp, writeHCoeff = self.getBoundaryValues(TEMP)
