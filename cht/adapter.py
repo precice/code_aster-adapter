@@ -116,13 +116,8 @@ class Interface:
 		self.writeHCoeffDataID = 0
 		self.writeTempDataID = 0
 
-		self.readTemp = []
-		self.readHCoeff = []
 		self.writeTemp = []
 		self.writeHCoeff = []
-
-		self.readDataSize = 0
-		self.writeDataSize = 0
 
 		self.MESH = MESH
 		# Shifted mesh (contains only the interface, and is shifted by delta in the direction opposite to the normal)
@@ -147,8 +142,10 @@ class Interface:
 
 		self.computeNormals()
 
+		dims = self.precice.get_dimensions()
+
 		self.nodeCoordinates = np.array([p for p in self.SHMESH.sdj.COORDO.VALE.get()])
-		self.nodeCoordinates = np.resize(self.nodeCoordinates, (int(len(self.nodeCoordinates)/3), 3))
+		self.nodeCoordinates = np.resize(self.nodeCoordinates, (int(len(self.nodeCoordinates)/dims), dims))
 		self.shiftMesh()
 
 		self.faces = [self.mesh.correspondance_mailles[idx] for idx in self.mesh.gma[self.groupName]]
@@ -157,12 +154,6 @@ class Interface:
 		self.setVertices()
 
 		self.setDataIDs(names)
-
-		self.readDataSize = len(self.faces)
-		self.writeDataSize = len(self.nodeCoordinates)
-
-		self.readHCoeff = np.zeros(self.readDataSize)
-		self.readTemp = np.zeros(self.readDataSize)
 
 	def computeNormals(self):
 		# Get normals at the nodes
@@ -181,7 +172,10 @@ class Interface:
 			OPERATION='NORMALE'
 		)
 		self.normals = N.EXTR_COMP().valeurs
-		self.normals = np.resize(np.array(self.normals), (int(len(self.normals)/3), 3))
+
+		dims = self.precice.get_dimensions()
+
+		self.normals = np.resize(np.array(self.normals), (int(len(self.normals)/dims), dims))
 		DETRUIRE(CONCEPT=({"NOM": N}, {"NOM": DUMMY}))
 
 	def setVertices(self):
@@ -251,9 +245,9 @@ class Interface:
 					1)
 
 	def readAndUpdateBCs(self):
-		self.precice.read_block_scalar_data(self.readHCoeffDataID,  self.preciceFaceCenterIndices)
-		self.precice.read_block_scalar_data(self.readTempDataID,  self.preciceFaceCenterIndices)
-		self.updateBCs(self.readTemp, self.readHCoeff)
+		readHCoeff = self.precice.read_block_scalar_data(self.readHCoeffDataID,  self.preciceFaceCenterIndices)
+		readTemp = self.precice.read_block_scalar_data(self.readTempDataID,  self.preciceFaceCenterIndices)
+		self.updateBCs(readTemp, readHCoeff)
 
 	def writeBCs(self, TEMP):
 		writeTemp, writeHCoeff = self.getBoundaryValues(TEMP)
@@ -277,10 +271,11 @@ class Interface:
 		self.LOAD = LOAD
 
 	def shiftMesh(self):
+		dims = self.precice.get_dimensions()
 		coords = [p for p in self.SHMESH.sdj.COORDO.VALE.get()]
 		for i in range(len(self.normals)):
-			for c in range(3):
-				coords[i*3 + c] = coords[i*3 + c] - self.normals[i][c] * self.delta
+			for c in range(dims):
+				coords[i*dims + c] = coords[i*dims + c] - self.normals[i][c] * self.delta
 		self.SHMESH.sdj.COORDO.VALE.changeJeveuxValues(len(coords), tuple(range(1, len(coords)+1)), tuple(coords), tuple(coords), 1)
 
 	def updateConductivity(self, T):
