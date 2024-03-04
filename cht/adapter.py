@@ -21,7 +21,7 @@ class Adapter:
 		self.isNonLinear = isNonLinear
 		self.participantName = participantName
 		self.preciceDt = -1
-		self.precice = precice.Interface(participantName, preciceConfigFile, 0, 1)
+		self.precice = precice.Participant(participantName, preciceConfigFile, 0, 1)
 		self.configure(config)
 
 	def configure(self, config):
@@ -41,42 +41,40 @@ class Adapter:
 
 	def initialize(self, INIT_T):
 
-		self.preciceDt = self.precice.initialize()
-		if self.precice.is_action_required(precice.action_write_initial_data()):
+		self.precice.initialize()
+		self.preciceDt = self.precice.get_max_time_step_size()
+		if self.precice.requires_initial_data():
 			self.writeCouplingData(INIT_T)
-			self.precice.fulfilled_action(precice.action_write_initial_data())
 
-		self.precice.initialize_data()
 		return self.preciceDt
 
 	def isCouplingOngoing(self):
 		return self.precice.is_coupling_ongoing()
 
 	def writeCouplingData(self, TEMP):
-		if self.precice.is_write_data_required(self.preciceDt):
-			for interface in self.interfaces:
-				interface.writeBCs(TEMP)
+		for interface in self.interfaces:
+			interface.writeBCs(TEMP)
 
 	def readCouplingData(self):
-		if self.precice.is_read_data_available():
-			for interface in self.interfaces:
-				interface.readAndUpdateBCs()
+		for interface in self.interfaces:
+			interface.readAndUpdateBCs()
 
 	def writeCheckpoint(self):
-		if self.precice.is_action_required(precice.action_write_iteration_checkpoint()):
+		if self.precice.requires_writing_checkpoint():
 			# Do nothing
-			self.precice.fulfilled_action(precice.action_write_iteration_checkpoint())
+			pass
 
 	def readCheckpoint(self):
-		if self.precice.is_action_required(precice.action_read_iteration_checkpoint()):
+		if self.precice.requires_reading_checkpoint():
 			# Do nothing
-			self.precice.fulfilled_action(precice.action_read_iteration_checkpoint())
+			pass
 
 	def isCouplingTimestepComplete(self):
 		return self.precice.is_time_window_complete()
 
 	def advance(self):
-		self.preciceDt = self.precice.advance(self.preciceDt)
+		self.precice.advance(self.preciceDt)
+		self.preciceDt = self.precice.get_max_time_step_size()
 		return self.preciceDt
 
 	def finalize(self):
@@ -108,13 +106,8 @@ class Interface:
 		self.preciceNodeIndices = []
 		self.preciceFaceCenterIndices = []
 
-		self.preciceFaceCentersMeshID = 0
-		self.preciceNodesMeshID = 0
-
-		self.readHCoeffDataID = 0
-		self.readTempDataID = 0
-		self.writeHCoeffDataID = 0
-		self.writeTempDataID = 0
+		self.readDataName = ""
+		self.writeDataName = ""
 
 		self.writeTemp = []
 		self.writeHCoeff = []
@@ -142,7 +135,14 @@ class Interface:
 
 		self.computeNormals()
 
-		dims = self.precice.get_dimensions()
+		nodes_mesh_dims = self.precice.get_mesh_dimensions(self.nodesMeshName)
+		face_centers_mesh_dims = self.precice.get_mesh_dimensions(self.faceCentersMeshName)
+
+		if nodes_mesh_dims != face_centers_mesh_dims:
+			raise ValueError("Dimensions of the read mesh and the write mesh do not match")
+		else:
+			# Set dimensions to nodes mesh dimensions
+			dims = nodes_mesh_dims
 
 		self.nodeCoordinates = np.array([p for p in self.SHMESH.sdj.COORDO.VALE.get()])
 		self.nodeCoordinates = np.resize(self.nodeCoordinates, (int(len(self.nodeCoordinates)/dims), dims))
@@ -173,42 +173,34 @@ class Interface:
 		)
 		self.normals = N.EXTR_COMP().valeurs
 
-		dims = self.precice.get_dimensions()
+		dims = self.precice.get_mesh_dimensions(self.nodesMeshName)
 
 		self.normals = np.resize(np.array(self.normals), (int(len(self.normals)/dims), dims))
 		DETRUIRE(CONCEPT=({"NOM": N}, {"NOM": DUMMY}))
 
 	def setVertices(self):
 		# Nodes
-		self.preciceNodesMeshID = self.precice.get_mesh_id(self.nodesMeshName)
-		self.preciceNodeIndices = self.precice.set_mesh_vertices(self.preciceNodesMeshID,  self.nodeCoordinates)
+		self.preciceNodeIndices = self.precice.set_mesh_vertices(self.nodesMeshName,  self.nodeCoordinates)
 		# Face centers
-		self.preciceFaceCentersMeshID = self.precice.get_mesh_id(self.faceCentersMeshName)
-		self.preciceFaceCenterIndices = self.precice.set_mesh_vertices(self.preciceFaceCentersMeshID, self.faceCenterCoordinates)
+		self.preciceFaceCenterIndices = self.precice.set_mesh_vertices(self.faceCentersMeshName, self.faceCenterCoordinates)
 
-	def setDataIDs(self, names):
+	def setDataNames(self, names):
 		for writeDataName in names["write-data"]:
 			if writeDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.writeHCoeffDataID = self.precice.get_data_id(writeDataName, self.preciceNodesMeshID)
+				self.writeDataName = writeDataName
 			elif writeDataName.find("Sink-Temperature-") >= 0:
-				self.writeTempDataID = self.precice.get_data_id(writeDataName, self.preciceNodesMeshID)
+				self.writeDataName = writeDataName
 		for readDataName in names["read-data"]:
 			if readDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.readHCoeffDataID = self.precice.get_data_id(readDataName, self.preciceFaceCentersMeshID)
+				self.readDataName = readDataName
 			elif readDataName.find("Sink-Temperature-") >= 0:
-				self.readTempDataID = self.precice.get_data_id(readDataName, self.preciceFaceCentersMeshID)
+				self.readDataName = readDataName
 
 	def getPreciceNodeIndices(self):
 		return self.preciceNodeIndices
 
 	def getPreciceFaceCenterIndices(self):
 		return self.preciceFaceCenterIndices
-
-	def getPreciceNodesMeshID(self):
-		return self.preciceNodesMeshID
-
-	def getPreciceFaceCentersMeshID(self):
-		return self.preciceFaceCentersMeshID
 
 	def getNodeCoordinates(self):
 		return self.nodeCoordinates
