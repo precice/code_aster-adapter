@@ -20,7 +20,6 @@ class Adapter:
 		self.LOADS = []
 		self.isNonLinear = isNonLinear
 		self.participantName = participantName
-		self.preciceDt = -1
 		self.precice = precice.Participant(participantName, preciceConfigFile, 0, 1)
 		self.configure(config)
 
@@ -40,13 +39,9 @@ class Adapter:
 			self.interfaces.append(interface)
 
 	def initialize(self, INIT_T):
-
 		self.precice.initialize()
-		self.preciceDt = self.precice.get_max_time_step_size()
 		if self.precice.requires_initial_data():
 			self.writeCouplingData(INIT_T)
-
-		return self.preciceDt
 
 	def isCouplingOngoing(self):
 		return self.precice.is_coupling_ongoing()
@@ -74,11 +69,12 @@ class Adapter:
 
 	def advance(self):
 		self.precice.advance(self.preciceDt)
-		self.preciceDt = self.precice.get_max_time_step_size()
-		return self.preciceDt
 
 	def finalize(self):
 		self.precice.finalize()
+
+	def getMaxTimeStepSize(self):
+		return self.precice.get_max_time_step_size()
 
 
 class Interface:
@@ -106,11 +102,9 @@ class Interface:
 		self.preciceNodeIndices = []
 		self.preciceFaceCenterIndices = []
 
-		self.readDataName = ""
-		self.writeDataName = ""
+		self.readData = dict()
 
-		self.writeTemp = []
-		self.writeHCoeff = []
+		self.writeDataNames = []
 
 		self.MESH = MESH
 		# Shifted mesh (contains only the interface, and is shifted by delta in the direction opposite to the normal)
@@ -153,8 +147,6 @@ class Interface:
 		self.faceCenterCoordinates = np.array([np.array([self.mesh.cn[node] for node in elem]).mean(0) for elem in self.connectivity])
 		self.setVertices()
 
-		self.setDataIDs(names)
-
 	def computeNormals(self):
 		# Get normals at the nodes
 		DUMMY = AFFE_MODELE(
@@ -187,14 +179,14 @@ class Interface:
 	def setDataNames(self, names):
 		for writeDataName in names["write-data"]:
 			if writeDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.writeDataName = writeDataName
+				self.writeDataNames.append(writeDataName)
 			elif writeDataName.find("Sink-Temperature-") >= 0:
-				self.writeDataName = writeDataName
+				self.writeDataNames.append(writeDataName)
 		for readDataName in names["read-data"]:
 			if readDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.readDataName = readDataName
+				self.readData[readDataName] = None
 			elif readDataName.find("Sink-Temperature-") >= 0:
-				self.readDataName = readDataName
+				self.readData[readDataName] = None
 
 	def getPreciceNodeIndices(self):
 		return self.preciceNodeIndices
@@ -237,14 +229,17 @@ class Interface:
 					1)
 
 	def readAndUpdateBCs(self):
-		readHCoeff = self.precice.read_block_scalar_data(self.readHCoeffDataID,  self.preciceFaceCenterIndices)
-		readTemp = self.precice.read_block_scalar_data(self.readTempDataID,  self.preciceFaceCenterIndices)
-		self.updateBCs(readTemp, readHCoeff)
+		dt = self.precice.get_max_time_step_size()
+		for name in self.readData.keys():
+			self.readData[name] = self.precice.read_data(self.faceCentersMeshName, name, self.preciceFaceCenterIndices, dt)
+
+		self.updateBCs(self.readData["Sink-Temperature-"], self.readData["Heat-Transfer-Coefficient-"])
 
 	def writeBCs(self, TEMP):
 		writeTemp, writeHCoeff = self.getBoundaryValues(TEMP)
-		self.precice.write_block_scalar_data(self.writeHCoeffDataID, self.preciceNodeIndices, writeHCoeff)
-		self.precice.write_block_scalar_data(self.writeTempDataID,  self.preciceNodeIndices, writeTemp)
+
+		self.precice.write_data(self.nodesMeshName, self.writeDataNames[0], self.preciceNodeIndices, writeHCoeff)
+		self.precice.write_data(self.nodesMeshName, self.writeDataNames[1],  self.preciceNodeIndices, writeTemp)
 
 	def getBoundaryValues(self, T):
 
@@ -263,7 +258,7 @@ class Interface:
 		self.LOAD = LOAD
 
 	def shiftMesh(self):
-		dims = self.precice.get_dimensions()
+		dims = self.precice.get_mesh_dimensions(self.nodesMeshName)
 		coords = [p for p in self.SHMESH.sdj.COORDO.VALE.get()]
 		for i in range(len(self.normals)):
 			for c in range(dims):
