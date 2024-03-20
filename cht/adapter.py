@@ -147,6 +147,8 @@ class Interface:
 		self.faceCenterCoordinates = np.array([np.array([self.mesh.cn[node] for node in elem]).mean(0) for elem in self.connectivity])
 		self.setVertices()
 
+		self.setDataNames(names)
+
 	def computeNormals(self):
 		# Get normals at the nodes
 		DUMMY = AFFE_MODELE(
@@ -179,14 +181,14 @@ class Interface:
 	def setDataNames(self, names):
 		for writeDataName in names["write-data"]:
 			if writeDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.writeDataNames.append("Heat-Transfer-Coefficient-")
+				self.writeDataNames.append(writeDataName)
 			elif writeDataName.find("Sink-Temperature-") >= 0:
-				self.writeDataNames.append("Sink-Temperature-")
+				self.writeDataNames.append(writeDataName)
 		for readDataName in names["read-data"]:
 			if readDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.readData["Heat-Transfer-Coefficient-"] = None
+				self.readData[readDataName] = None
 			elif readDataName.find("Sink-Temperature-") >= 0:
-				self.readData["Sink-Temperature-"] = None
+				self.readData[readDataName] = None
 
 	def getPreciceNodeIndices(self):
 		return self.preciceNodeIndices
