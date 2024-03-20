@@ -39,9 +39,9 @@ class Adapter:
 			self.interfaces.append(interface)
 
 	def initialize(self, INIT_T):
-		self.precice.initialize()
 		if self.precice.requires_initial_data():
 			self.writeCouplingData(INIT_T)
+		self.precice.initialize()
 
 	def isCouplingOngoing(self):
 		return self.precice.is_coupling_ongoing()
@@ -179,14 +179,14 @@ class Interface:
 	def setDataNames(self, names):
 		for writeDataName in names["write-data"]:
 			if writeDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.writeDataNames.append(writeDataName)
+				self.writeDataNames.append("Heat-Transfer-Coefficient-")
 			elif writeDataName.find("Sink-Temperature-") >= 0:
-				self.writeDataNames.append(writeDataName)
+				self.writeDataNames.append("Sink-Temperature-")
 		for readDataName in names["read-data"]:
 			if readDataName.find("Heat-Transfer-Coefficient-") >= 0:
-				self.readData[readDataName] = None
+				self.readData["Heat-Transfer-Coefficient-"] = None
 			elif readDataName.find("Sink-Temperature-") >= 0:
-				self.readData[readDataName] = None
+				self.readData["Sink-Temperature-"] = None
 
 	def getPreciceNodeIndices(self):
 		return self.preciceNodeIndices
