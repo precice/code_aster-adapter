@@ -68,7 +68,8 @@ class Adapter:
 		return self.precice.is_time_window_complete()
 
 	def advance(self):
-		self.precice.advance(self.preciceDt)
+		dt = self.precice.get_max_time_step_size()
+		self.precice.advance(dt)
 
 	def finalize(self):
 		self.precice.finalize()
