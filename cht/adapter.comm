@@ -47,7 +47,8 @@ adapter = Adapter(preciceConfigFile,
 BCs = [{'CHARGE': bc} for bc in BC]
 LOADS = BCs + adapter.LOADS
 
-dt = adapter.initialize(INIT_T)
+adapter.initialize(INIT_T)
+dt = adapter.getMaxTimeStepSize()
 
 # ==========================================================================================
 # ==========================================================================================
@@ -127,7 +128,8 @@ while adapter.isCouplingOngoing():
         )
 
     adapter.writeCouplingData(T)
-    dt = adapter.advance()
+    adapter.advance()
+    dt = adapter.getMaxTimeStepSize()
     adapter.readCheckpoint()
 
     if adapter.isCouplingTimestepComplete():
