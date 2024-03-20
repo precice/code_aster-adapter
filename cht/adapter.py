@@ -180,14 +180,14 @@ class Interface:
 
 	def setDataNames(self, names):
 		for writeDataName in names["write-data"]:
-			if writeDataName.find("Heat-Transfer-Coefficient-") >= 0:
+			if writeDataName.find("Heat-Transfer-Coefficient-Solid") >= 0:
 				self.writeDataNames.append(writeDataName)
-			elif writeDataName.find("Sink-Temperature-") >= 0:
+			elif writeDataName.find("Sink-Temperature-Solid") >= 0:
 				self.writeDataNames.append(writeDataName)
 		for readDataName in names["read-data"]:
-			if readDataName.find("Heat-Transfer-Coefficient-") >= 0:
+			if readDataName.find("Heat-Transfer-Coefficient-Fluid") >= 0:
 				self.readData[readDataName] = None
-			elif readDataName.find("Sink-Temperature-") >= 0:
+			elif readDataName.find("Sink-Temperature-Fluid") >= 0:
 				self.readData[readDataName] = None
 
 	def getPreciceNodeIndices(self):
@@ -235,7 +235,7 @@ class Interface:
 		for name in self.readData.keys():
 			self.readData[name] = self.precice.read_data(self.faceCentersMeshName, name, self.preciceFaceCenterIndices, dt)
 
-		self.updateBCs(self.readData["Sink-Temperature-"], self.readData["Heat-Transfer-Coefficient-"])
+		self.updateBCs(self.readData["Sink-Temperature-Fluid"], self.readData["Heat-Transfer-Coefficient-Fluid"])
 
 	def writeBCs(self, TEMP):
 		writeTemp, writeHCoeff = self.getBoundaryValues(TEMP)
