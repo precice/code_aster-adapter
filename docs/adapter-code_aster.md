@@ -12,8 +12,8 @@ The adapter requires at least preCICE v2.0. It was developed and tested again [c
 
 Since code_aster works with 'command files' that include integrated python code, you will need to the python bindings of preCICE to use this adapter:
 
-* [Get preCICE](installation-overview.html)
-* [Get Python bindings of preCICE](installation-bindings-python.html)
+* [Get preCICE](https://precice.org/installation-overview.html)
+* [Get Python bindings of preCICE](https://precice.org/installation-bindings-python.html)
 
 ## Get code_aster
 
@@ -85,7 +85,7 @@ If everything is as expected, the output should be `--- DIAGNOSTIC JOB : OK`.
 
 ## Test cases
 
-There is [a tutorial](tutorials-flow-over-heated-plate-steady-state.html) available to help you get started with coupling code_aster through preCICE. In this tutorial, we couple code_aster as a solid solver, and OpenFOAM as a fluid solver for a flow-over-plate conjugate-heat-transfer scenario.
+There is [a tutorial](https://precice.org/tutorials-flow-over-heated-plate-steady-state.html) available to help you get started with coupling code_aster through preCICE. In this tutorial, we couple code_aster as a solid solver, and OpenFOAM as a fluid solver for a flow-over-plate conjugate-heat-transfer scenario.
 
 ## Required files for a coupled Simulation
 
