@@ -50,13 +50,13 @@ python3 setup.py install --prefix=/your/target/path
 
 The installation will ask you to confirm the automatically-set environment soon after it starts. Make sure that none of the dependencies listed are missing, and that there are no unexpected messages. It can happen that some optional dependencies (such as nedit, geany or gvim) are not found, this is not a problem. Once confirmed that everything is correct, you can go ahead and tell the terminal to continue the installation.
 
-![Example of configurations before the 'installation go-ahead'](images/docs/adapter-codeaster-configurations.png)
+![Example of configurations before the 'installation go-ahead'](images/adapter-codeaster-configurations.png)
 
 code_aster and the bundled dependencies will now be built. This can take a while.
 
 After the installation is done, check that all dependencies have been installed correctly. If a dependency was not installed correctly, go through the log file, and try to run the installation again. Alternatively, install the dependency manually and specify its path in `setup.cfg`. In this case, make sure that the required version of the tool is installed.
 
-![Terminal output for a successful installation](images/docs/adapter-codeaster-success.png)
+![Terminal output for a successful installation](images/adapter-codeaster-success.png)
 
 Once the solver has been installed successfully, add the following line to the bashrc (run `gedit ~/.bashrc`) and start a new session:
 
@@ -76,7 +76,7 @@ as_run --vers=14.6 --test forma01a
 
 If everything is as expected, the output should be `--- DIAGNOSTIC JOB : OK`.
 
-!['Diagnostic OK' output after a test was run successfully](images/docs/adapter-codeaster-testing.png)
+!['Diagnostic OK' output after a test was run successfully](images/adapter-codeaster-testing.png)
 
 ## Get the code_aster adapter
 
@@ -141,7 +141,7 @@ The `solid.export` file that is included in the tutorial needs to be configured 
 
 7. Run the case from a terminal as `as_run --run solid.export`.
 
-![astk settings overview](images/docs/adapter-codeaster-astk-settings.png)
+![astk settings overview](images/adapter-codeaster-astk-settings.png)
 
 ### Setting the preCICE exchange directory
 
