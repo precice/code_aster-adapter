@@ -1,6 +1,7 @@
 ---
 title: The code_aster adapter
 permalink: adapter-code_aster.html
+url: /adapter-code_aster.html
 keywords: CHT, pyprecice
 summary: "On this page, we give a step-by-step guide how to get and install code_aster and the code_aster adapter. The adapter currently supports usage of code_aster as solid solver for conjugate heat transfer problems. We use the Python command files of code_aster and call the preCICE Python bindings from there."
 ---
